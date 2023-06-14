@@ -2,13 +2,19 @@ import { ClipboardText } from 'phosphor-react';
 import { Tasks } from '../Tasks/Tasks';
 import styles from './TaskContent.module.css';
 
-export function TaskContent() {
+interface TaskContent {
+  info: string[];
+}
+
+export function TaskContent({info}: TaskContent) {
+  const isTaskEmpty = info.length === 1;
+
   return(
     <div className={styles.taskcontent}>
       <div className={styles.taskheader}>
         <div className={styles.taskcreated}>
           <span>Tarefas criadas</span>
-          <p>0</p>
+          <p>{info.length}</p>
         </div>
         <div className={styles.taskcompleted}>
           <span>Concluídas</span>
@@ -17,7 +23,7 @@ export function TaskContent() {
       </div>
 
       {
-        false ?
+        isTaskEmpty ?
           (
             <div className={styles.taskbox}>
               <div className={styles.taskempty}>
@@ -30,11 +36,11 @@ export function TaskContent() {
           :
           (
             <div className={styles.tasks}>
-              <Tasks />
-              <Tasks />
-              <Tasks />
-              <Tasks />
-              <Tasks />
+              {
+                info.map(item => {
+                  return <Tasks text={item} />
+                })
+              }
             </div>
           )
       }
