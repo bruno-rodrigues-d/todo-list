@@ -10,17 +10,17 @@ interface TaskContent {
 
 export function TaskContent({info, onDeleteTask}: TaskContent) {
   const [numberDone, setNumberDone] = useState<number>(0);
+  // const [taskD, setTaskD] = useState<string[]>([]);
+  // const [taskDCurrent, setTaskDCurrent] = useState<string[]>([]);
   const [currentTasks, setCurrentTasks] = useState<string[]>(info);
   const isTaskEmpty = info.length === 0;
 
-  // function handleNumberDone(numberOfTasksDone: boolean) {
-  //   console.log(new Array(info.length).fill(numberOfTasksDone));
-  //   console.log(info);
+   function handleNumberDone(taskDone: string[]) {
 
-  //   console.log(new Array(info.length).fill(numberOfTasksDone).filter(item => item === true).length);
-  //   const numberDone = new Array(info.length).fill(numberOfTasksDone).filter(item => item === true).length;
-  //   setNumberDone(numberDone);
-  // }
+    //  console.log('taskDone', taskDone);
+    //  console.log('taskDone', taskDone.length);
+     setNumberDone(taskDone.length);
+   }
 
   useEffect(() => {
     setCurrentTasks(info);
@@ -28,7 +28,13 @@ export function TaskContent({info, onDeleteTask}: TaskContent) {
 
   function deleteTaskContent(taskToDelete: string) {
     onDeleteTask(taskToDelete);
+
+    if (taskToDelete.length === 0) {
+      setNumberDone(0);
+    }
   }
+
+  const isNumberDone = numberDone === 0;
 
   return(
     <div className={styles.taskcontent}>
@@ -39,7 +45,13 @@ export function TaskContent({info, onDeleteTask}: TaskContent) {
         </div>
         <div className={styles.taskcompleted}>
           <span>Concluídas</span>
-          <p>{numberDone}</p>
+          {
+            isNumberDone
+            ?
+            (<p>{numberDone}</p>)
+            :
+            (<p>{numberDone} de {info.length}</p>)
+          }
         </div>
       </div>
 
@@ -59,7 +71,7 @@ export function TaskContent({info, onDeleteTask}: TaskContent) {
             <div className={styles.tasks}>
               {
                 currentTasks.map(item => {
-                  return <Tasks key={item} text={item} onDeleteTask={deleteTaskContent} />
+                  return <Tasks key={item} text={item} onGetNumberDone={handleNumberDone} onDeleteTask={deleteTaskContent} />
                 })
               }
             </div>

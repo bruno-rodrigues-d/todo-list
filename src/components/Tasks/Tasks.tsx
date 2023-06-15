@@ -5,17 +5,21 @@ import styles from './Tasks.module.css';
 interface TaskType {
   text: string;
   onDeleteTask: (textDelete: string) => void;
+  onGetNumberDone: (numberDone: string[]) => void;
 }
 
-export function Tasks({text, onDeleteTask}: TaskType) {
-  const [checked, setChecked] = useState<boolean>(false);
-  const [numberChecked, setNumberChecked] = useState<boolean[]>([]);
+export function Tasks({text, onGetNumberDone ,onDeleteTask}: TaskType) {
+  const [isChecked, setIsChecked] = useState<string[]>([]);
 
   function handleChecked(event: ChangeEvent<HTMLInputElement>) {
-      setChecked(event.target.checked);
+      const {value, checked} = event.target;
 
-      if (event.target.checked === true) {
-        setNumberChecked([event.target.checked]);
+      if (checked) {
+        setIsChecked(item => [...item, value]);
+      } else {
+        setIsChecked(item => {
+          return [...item.filter(selected => selected !== value)]
+         });
       }
   }
 
@@ -23,8 +27,7 @@ export function Tasks({text, onDeleteTask}: TaskType) {
     onDeleteTask(text);
   }
 
-  //onCountNumberTasksDone(checked);
-
+  onGetNumberDone(isChecked);
   return(
     <>
       <script src="https://kit.fontawesome.com/7368c40b21.js" crossOrigin="anonymous"></script>
@@ -33,7 +36,7 @@ export function Tasks({text, onDeleteTask}: TaskType) {
         <input
           type="checkbox"
           id="checkboxId"
-          checked={checked}
+          value={text}
           onChange={handleChecked}
         />
         <span>{text}</span>

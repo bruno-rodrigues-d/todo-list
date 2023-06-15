@@ -20,7 +20,7 @@ export function TaskBar() {
     setNewTask(event.target.value);
   }
 
-  function handleNewTaskTextInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
+  function handleNewTaskTextInvalid(event: InvalidEvent<HTMLInputElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!');
   }
 
