@@ -1,13 +1,34 @@
 import { ClipboardText } from 'phosphor-react';
+import { useEffect, useState } from 'react';
 import { Tasks } from '../Tasks/Tasks';
 import styles from './TaskContent.module.css';
 
 interface TaskContent {
   info: string[];
+  onDeleteTask: (textDelete: string) => void;
 }
 
-export function TaskContent({info}: TaskContent) {
-  const isTaskEmpty = info.length === 1;
+export function TaskContent({info, onDeleteTask}: TaskContent) {
+  const [numberDone, setNumberDone] = useState<number>(0);
+  const [currentTasks, setCurrentTasks] = useState<string[]>(info);
+  const isTaskEmpty = info.length === 0;
+
+  // function handleNumberDone(numberOfTasksDone: boolean) {
+  //   console.log(new Array(info.length).fill(numberOfTasksDone));
+  //   console.log(info);
+
+  //   console.log(new Array(info.length).fill(numberOfTasksDone).filter(item => item === true).length);
+  //   const numberDone = new Array(info.length).fill(numberOfTasksDone).filter(item => item === true).length;
+  //   setNumberDone(numberDone);
+  // }
+
+  useEffect(() => {
+    setCurrentTasks(info);
+  }, [info]);
+
+  function deleteTaskContent(taskToDelete: string) {
+    onDeleteTask(taskToDelete);
+  }
 
   return(
     <div className={styles.taskcontent}>
@@ -18,7 +39,7 @@ export function TaskContent({info}: TaskContent) {
         </div>
         <div className={styles.taskcompleted}>
           <span>Concluídas</span>
-          <p>0</p>
+          <p>{numberDone}</p>
         </div>
       </div>
 
@@ -37,8 +58,8 @@ export function TaskContent({info}: TaskContent) {
           (
             <div className={styles.tasks}>
               {
-                info.map(item => {
-                  return <Tasks text={item} />
+                currentTasks.map(item => {
+                  return <Tasks key={item} text={item} onDeleteTask={deleteTaskContent} />
                 })
               }
             </div>

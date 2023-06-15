@@ -1,24 +1,36 @@
 import { PlusCircle } from 'phosphor-react';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 import { TaskContent } from '../TaskContent/TaskContent';
 
 import styles from './TaskBar.module.css';
 
 export function TaskBar() {
-  const [task, setTask] = useState<string[]>(['']);
+  const [task, setTask] = useState<string[]>([]);
   const [newTask, setNewTask] = useState('');
 
   function handleCreateNewTask(event: FormEvent) {
     event.preventDefault();
 
     setTask([...task, newTask]);
+    setNewTask('');
   }
 
-  function handleTaskText(event: ChangeEvent<HTMLInputElement>) {
+  function handleChangeTaskText(event: ChangeEvent<HTMLInputElement>) {
+    event.target.setCustomValidity('');
     setNewTask(event.target.value);
   }
 
-  console.log(task);
+  function handleNewTaskTextInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
+    event.target.setCustomValidity('Esse campo é obrigatório!');
+  }
+
+  function deleteTask(taskToDelete: string) {
+    const commentsWithoutDeleteOne = task.filter(item => {
+      return item !== taskToDelete;
+    });
+
+    setTask(commentsWithoutDeleteOne);
+  }
 
   return(
     <>
@@ -26,7 +38,10 @@ export function TaskBar() {
         <input
           type="text"
           placeholder='Adicione uma nova tarefa'
-          onChange={handleTaskText}
+          value={newTask}
+          onChange={handleChangeTaskText}
+          onInvalid={handleNewTaskTextInvalid}
+          required
         />
         <button type='submit'>
           Criar
@@ -34,7 +49,7 @@ export function TaskBar() {
         </button>
       </form>
 
-      <TaskContent info={task} />
+      <TaskContent info={task} onDeleteTask={deleteTask}/>
     </>
   );
 }
